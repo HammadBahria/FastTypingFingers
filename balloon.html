@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balloon Pop</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { height: 100vh; background: #a6d8ff; }
+  .stat-value { font-weight: 800; font-size: 1.1rem; }
+    .full-board-wrap { position: relative; }
+    /* Board & balloon visuals (mirrors games page) */
+    #balloon-board { position: relative; height: 100vh; width: 100vw; border: none; border-radius: 0; overflow: hidden; 
+      background: #a6d8ff; color: rgba(255,255,255,0.7); display: block; }
+  .top-lives { position:absolute; top: 10px; left:50%; transform: translateX(-50%); color: #0b1220; font-weight: 800; background: rgba(255,255,255,0.35); border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; padding: .35rem .7rem; z-index: 6; backdrop-filter: blur(3px); }
+  .top-score { position:absolute; top: 10px; right:10px; color: #0b1220; font-weight: 800; background: rgba(255,255,255,0.35); border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; padding: .35rem .7rem; z-index: 6; backdrop-filter: blur(3px); }
+    .balloon { position: absolute; width: 56px; height: 70px; border-radius: 50% 50% 45% 45%; box-shadow: 0 10px 24px rgba(0,0,0,0.25); display: grid; place-items: center; font-weight: 800; color: #0b1220; letter-spacing: 0.06em; left: 0; top: 0; animation: drift 3.8s ease-in-out infinite alternate; }
+    .balloon::after { content: ''; position: absolute; bottom: -14px; left: 50%; width: 2px; height: 24px; background: rgba(255,255,255,0.5); transform: translateX(-50%); }
+    .balloon .ch { font-size: 1.2rem; }
+    .balloon.popped { animation: pop-out 250ms ease-out forwards; }
+    @keyframes pop-out { 0% { transform: scale(1); opacity: 1; } 60% { transform: scale(1.2); opacity: .8; } 100% { transform: scale(0.4); opacity: 0; } }
+    @keyframes drift { 0% { transform: translateX(-3px); } 100% { transform: translateX(6px); } }
+    .toast { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(.9); background: rgba(0,0,0,0.6); color: #fff; padding: .75rem 1rem; border-radius: 12px; font-weight: 800; letter-spacing: .06em; box-shadow: 0 10px 30px rgba(0,0,0,0.45); backdrop-filter: blur(4px); z-index: 10; opacity: 0; }
+    .toast.show { animation: toast-pop 380ms cubic-bezier(.2,.8,.2,1) forwards; }
+    @keyframes toast-pop { 0% { transform: translate(-50%,-50%) scale(.7); opacity: 0;} 60% { transform: translate(-50%,-50%) scale(1.05); opacity: 1;} 100% { transform: translate(-50%,-50%) scale(1); opacity: 1;} }
+    .modal { position: absolute; inset: 0; display: grid; place-items: center; z-index: 20; }
+    .modal.hidden { display: none !important; }
+    .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); animation: fade-in .25s ease-out forwards; }
+    .modal-card { position: relative; background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(15,23,42,0.75)); border: 1px solid rgba(255,255,255,0.18); border-radius: 16px; padding: 1.25rem 1.25rem 1rem; width: min(92vw, 380px); box-shadow: 0 18px 60px rgba(0,0,0,0.55); transform: translateY(16px) scale(.94); opacity: 0; animation: modal-in .4s cubic-bezier(.2,.8,.2,1) forwards; color: #fff; }
+    .modal-card h3 { margin: 0 0 .5rem; }
+    .modal-summary { opacity: .9; margin-bottom: .9rem; }
+    .modal-actions { display: flex; gap: .5rem; justify-content: flex-end; }
+    @keyframes modal-in { 0% { transform: translateY(24px) scale(.9); opacity: 0;} 60% { transform: translateY(-6px) scale(1.02); opacity: 1;} 100% { transform: translateY(0) scale(1); opacity: 1;} }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1;} }
+    .hidden { display: none !important; }
+
+    /* Moving cloud background */
+    .cloud-layer { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+    .cloud { position:absolute; top:0; width: 200px; height: 100px; opacity:.95; transform: translateX(-30vw) scale(var(--scale, 1));
+      animation: cloud-move linear infinite;
+      will-change: transform;
+    }
+    .cloud svg { width: 100%; height: 100%; display: block; }
+  .cloud path { fill: #ffffff; stroke: none; stroke-width: 0; }
+    @keyframes cloud-move {
+      0% { transform: translateX(-30vw) scale(var(--scale, 1)); }
+      100% { transform: translateX(200vw) scale(var(--scale, 1)); }
+    }
+    /* Make balloons render above clouds */
+    #balloon-board .balloon { z-index: 1; }
+  #explosion-layer { position:absolute; inset:0; pointer-events:none; z-index: 5; }
+    .particle { position:absolute; width: 8px; height: 8px; background: var(--pcolor, #ffd166); border-radius: 50%; opacity: 0; animation: explode 900ms ease-out forwards; }
+    @keyframes explode { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--dx,0), var(--dy,0)) scale(0.6); opacity: 0; } }
+    /* background balloons */
+    .bg-balloons { position:absolute; inset:0; z-index:0; pointer-events:none; }
+    .bg-balloon { position:absolute; width: 26px; height: 34px; border-radius: 50% 50% 44% 44%; opacity: .75; filter: blur(.3px); animation: rise linear infinite; }
+    .bg-balloon::after { content:''; position:absolute; bottom:-8px; left:50%; width:1px; height:14px; background: rgba(255,255,255,0.6); transform: translateX(-50%); }
+    @keyframes rise { 0% { transform: translateY(8vh); } 100% { transform: translateY(-110vh); } }
+    /* sun */
+    .sun { position:absolute; right: 6vw; top: 6vh; width: 120px; height:120px; border-radius:50%; background: radial-gradient(circle at 35% 35%, #fff7cc, #ffd166 60%, rgba(255,209,102,0.0) 70%); box-shadow: 0 0 60px rgba(255,209,102,0.6); z-index: 0; }
+
+    /* Intro overlay */
+    .intro-overlay { position:absolute; inset:0; display:grid; place-items:center; z-index:6; }
+    .intro-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.35); border-radius: 16px; padding: 1.25rem 1.1rem; width: min(92vw, 360px); text-align:center; color:#0b1220; box-shadow: 0 18px 60px rgba(0,0,0,0.35); }
+    .intro-card h2 { margin: 0 0 .5rem; color: #0b1220; font-weight: 800; letter-spacing: .03em; }
+    .intro-lives { margin: .35rem 0 1rem; font-weight: 700; color: #0b1220; display:flex; align-items:center; justify-content:center; gap:.5rem; }
+    .intro-actions { display:flex; gap:.5rem; justify-content:center; }
+    .action-btn { border: 1px solid rgba(0,0,0,0.12); background: #ffffff; color: #0b1220; border-radius: 12px; padding: .5rem .85rem; cursor: pointer; font-weight: 700; }
+    .action-btn.primary { background: #0ea5e9; border-color: #0284c7; color: #fff; }
+    .action-btn:hover { filter: brightness(0.95); }
+  </style>
+</head>
+<body data-page="balloon-full">
+  <script>
+    try {
+      var __s = JSON.parse(localStorage.getItem('typefast-settings') || '{}');
+      var __t = __s.theme || 'coast';
+      document.body.classList.add('theme-' + __t);
+    } catch(e) { document.body.classList.add('theme-coast'); }
+  </script>
+
+  
+
+  <main class="full-board-wrap" style="height:100vh;">
+    <div id="balloon-area" class="game-area" style="margin:0;">
+      <div id="balloon-board" class="balloon-board">
+        <div class="top-lives">Lives: <span id="balloon-lives">3</span></div>
+        <div class="sun"></div>
+        <div class="top-score">Score: <span id="balloon-score">0</span></div>
+        <div id="bg-balloons" class="bg-balloons"></div>
+        <div id="cloud-layer" class="cloud-layer"></div>
+        <div id="intro-overlay" class="intro-overlay">
+          <div class="intro-card">
+            <h2>Balloon Pop</h2>
+            <div class="intro-lives">
+              <span>Lives:</span>
+              <button id="intro-lives-dec" class="action-btn" aria-label="Decrease lives">−</button>
+              <span id="balloon-lives-intro">3</span>
+              <button id="intro-lives-inc" class="action-btn" aria-label="Increase lives">+</button>
+            </div>
+            <div class="intro-score" style="margin:.25rem 0 1rem; font-weight:700; color:#0b1220;">Score: <span id="balloon-score-intro">0</span></div>
+            <div class="intro-actions">
+              <button id="balloon-start" class="action-btn primary">Start</button>
+              <button id="balloon-back" class="action-btn">Back</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- only a Back option on this page; no other controls -->
+      <div id="level-up-toast" class="toast hidden">Level Up!</div>
+      <!-- game over modal removed by request -->
+    </div>
+  </main>
+
+  <script src="js/games.js"></script>
+</body>
+</html>

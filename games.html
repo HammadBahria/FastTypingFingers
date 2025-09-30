@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FastTyping Fingers - Games</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Page-specific minor tweaks to center the game */
+    .games-container { max-width: 1000px; margin: 0 auto; padding: 1rem 1rem 2rem; }
+    .game-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 18px; padding: 1.5rem; box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+    .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+    .game-tile { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1.25rem; cursor: pointer; transition: transform .25s ease, box-shadow .25s ease; }
+    .game-tile:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(0,0,0,0.4); }
+    .game-tile h3 { margin-bottom: .35rem; }
+  .game-thumb { width: 100%; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: .75rem; display: block; }
+  .game-area { margin-top: 1.25rem; position: relative; }
+  /* Toast and modal */
+  .toast { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(.9); background: rgba(0,0,0,0.6); color: #fff; padding: .75rem 1rem; border-radius: 12px; font-weight: 800; letter-spacing: .06em; box-shadow: 0 10px 30px rgba(0,0,0,0.45); backdrop-filter: blur(4px); z-index: 10; opacity: 0; }
+  .toast.show { animation: toast-pop 380ms cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes toast-pop { 0% { transform: translate(-50%,-50%) scale(.7); opacity: 0;} 60% { transform: translate(-50%,-50%) scale(1.05); opacity: 1;} 100% { transform: translate(-50%,-50%) scale(1); opacity: 1;} }
+  .modal { position: absolute; inset: 0; display: grid; place-items: center; z-index: 20; }
+  .modal.hidden { display: none !important; }
+  .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); animation: fade-in .25s ease-out forwards; }
+  .modal-card { position: relative; background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(15,23,42,0.75)); border: 1px solid rgba(255,255,255,0.18); border-radius: 16px; padding: 1.25rem 1.25rem 1rem; width: min(92vw, 380px); box-shadow: 0 18px 60px rgba(0,0,0,0.55); transform: translateY(16px) scale(.94); opacity: 0; animation: modal-in .4s cubic-bezier(.2,.8,.2,1) forwards; color: #fff; }
+  .modal-card h3 { margin: 0 0 .5rem; }
+  .modal-summary { opacity: .9; margin-bottom: .9rem; }
+  .modal-actions { display: flex; gap: .5rem; justify-content: flex-end; }
+  @keyframes modal-in { 0% { transform: translateY(24px) scale(.9); opacity: 0;} 60% { transform: translateY(-6px) scale(1.02); opacity: 1;} 100% { transform: translateY(0) scale(1); opacity: 1;} }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1;} }
+  .lives-input { width: 64px; padding: .25rem .35rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); color: #fff; font-weight: 600; }
+    .hidden { display: none !important; }
+    /* Balloon game styles */
+    .balloon-board { position: relative; height: 380px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.18); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(15, 23, 42, 0.35)); box-shadow: 0 12px 30px rgba(0,0,0,0.35); display: block; color: rgba(255,255,255,0.7); }
+    .balloon { position: absolute; width: 56px; height: 70px; border-radius: 50% 50% 45% 45%; box-shadow: 0 10px 24px rgba(0,0,0,0.35); display: grid; place-items: center; font-weight: 800; color: #0b1220; letter-spacing: 0.06em; left: 0; top: 0; }
+    .balloon::after { content: ''; position: absolute; bottom: -14px; left: 50%; width: 2px; height: 24px; background: rgba(255,255,255,0.5); transform: translateX(-50%); }
+    .balloon .ch { font-size: 1.2rem; }
+    .balloon.popped { animation: pop-out 250ms ease-out forwards; }
+    @keyframes pop-out { 0% { transform: scale(1); opacity: 1; } 60% { transform: scale(1.2); opacity: .8; } 100% { transform: scale(0.4); opacity: 0; } }
+
+    /* Cover banner */
+  .game-cover { position: relative; border-radius: 14px; overflow: hidden; height: 160px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 12px 32px rgba(0,0,0,0.35); background: center/cover no-repeat url('assets/download.jpg'); }
+    .game-cover::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.45), rgba(0,0,0,0.2)); }
+    .game-cover-title { position: absolute; bottom: 0.75rem; left: 1rem; color: #fff; font-weight: 800; letter-spacing: 0.06em; font-size: 1.2rem; z-index: 1; }
+  </style>
+</head>
+<body>
+  <script>
+    try {
+      var __s = JSON.parse(localStorage.getItem('typefast-settings') || '{}');
+      var __t = __s.theme || 'coast';
+      document.body.classList.add('theme-' + __t);
+    } catch(e) { document.body.classList.add('theme-coast'); }
+  </script>
+  <div class="animated-backdrop">
+    <span class="bg-orb orb-1"></span>
+    <span class="bg-orb orb-2"></span>
+    <span class="bg-orb orb-3"></span>
+    <span class="bg-orb orb-4"></span>
+    <span class="bg-orb orb-5"></span>
+  </div>
+
+  <header class="header global-header">
+    <nav class="navbar">
+      <div class="nav-brand">
+        <span class="brand-mark">🎮</span>
+        <h1>FastTyping Fingers</h1>
+      </div>
+      <div class="nav-links">
+        <a href="index.html#home" class="nav-link">Home</a>
+        <a href="index.html#test" class="nav-link">Test</a>
+        <a href="index.html#about" class="nav-link">About</a>
+        <a href="index.html#contact" class="nav-link">Contact</a>
+        <a href="games.html" class="nav-link active">Games</a>
+      </div>
+      <div class="nav-actions">
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Change theme">🎨</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Theme Selector (same as main site) -->
+  <div id="theme-selector" class="theme-selector hidden" role="dialog" aria-modal="false">
+    <div class="theme-selector-header">
+      <p>Choose a color vibe</p>
+      <button class="theme-close" aria-label="Close theme selector">×</button>
+    </div>
+    <div class="theme-options">
+      <div class="theme-option" data-theme="coast">
+        <div class="theme-preview theme-coast-preview"></div>
+        <span>Coast</span>
+      </div>
+      <div class="theme-option" data-theme="harbor">
+        <div class="theme-preview theme-harbor-preview"></div>
+        <span>Harbor</span>
+      </div>
+      <div class="theme-option" data-theme="nebula">
+        <div class="theme-preview theme-nebula-preview"></div>
+        <span>Nebula</span>
+      </div>
+      <div class="theme-option" data-theme="ember">
+        <div class="theme-preview theme-ember-preview"></div>
+        <span>Ember</span>
+      </div>
+      <div class="theme-option" data-theme="light">
+        <div class="theme-preview theme-light-preview"></div>
+        <span>Light</span>
+      </div>
+      <div class="theme-option" data-theme="dark">
+        <div class="theme-preview theme-dark-preview"></div>
+        <span>Dark</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-content games-container">
+    <section class="info-section" style="text-align:left">
+      <h2 class="section-title">Typing Games</h2>
+      <p class="section-lead">Have fun while improving your speed and accuracy. Pick a game below to start!</p>
+
+      <div class="game-card">
+        
+        <h3 style="margin-bottom: .75rem;">Available Games</h3>
+        <div class="game-grid">
+          <div class="game-tile" id="game-balloon-pop">
+            <img class="game-thumb" src="assets/images/ballon.jpg" alt="Balloon Pop cover" />
+            <h3>Balloon Pop</h3>
+            <p>Pop balloons by pressing their letter before they float away.</p>
+          </div>
+          <div class="game-tile" id="game-space-attack">
+            <img class="game-thumb" src="assets/images/player-ship.svg" alt="Space Attack cover" />
+            <h3>Space Attack</h3>
+            <p>Type the spell on enemy ships to fire and destroy them.</p>
+          </div>
+          <!-- Future tiles go here -->
+        </div>
+
+        <div class="game-area hidden" id="balloon-area">
+          <div class="test-stats" style="justify-content:flex-start; gap:1.25rem; align-items:center; flex-wrap: wrap;">
+            <div class="stat"><span class="stat-label">Score</span><span class="stat-value" id="balloon-score">0</span></div>
+            <div class="stat"><span class="stat-label">Lives</span><span class="stat-value" id="balloon-lives">3</span></div>
+            <div class="stat"><label class="stat-label" for="balloon-lives-input">Set Lives</label><input class="lives-input" id="balloon-lives-input" type="number" min="1" max="20" value="3" /></div>
+          </div>
+          <div id="balloon-board" class="balloon-board">Click Start to begin.</div>
+          <div style="display:flex; gap:.75rem; justify-content:flex-start; margin-top:.75rem; flex-wrap: wrap;">
+            <button id="balloon-start" class="action-btn primary">Start</button>
+            <button id="balloon-stop" class="action-btn">Stop</button>
+            <button id="balloon-fullscreen" class="action-btn">Fullscreen</button>
+            <button id="balloon-back" class="action-btn">Back</button>
+          </div>
+          <div id="level-up-toast" class="toast hidden">Level Up!</div>
+          <div id="game-over-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-card">
+              <h3>Game Over</h3>
+              <p class="modal-summary"><span id="go-score">0</span> points · Level <span id="go-level">1</span></p>
+              <div class="modal-actions">
+                <button id="go-restart" class="action-btn primary">Play Again</button>
+                <button id="go-close" class="action-btn">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/games.js"></script>
+</body>
+</html>

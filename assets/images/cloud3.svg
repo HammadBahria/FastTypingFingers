@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140">
+  <title>Cloud 3</title>
+  <desc>Outlined cartoon cloud with multiple puffs</desc>
+  <path d="M42,96 C26,96 16,86 16,74 C16,62 26,54 38,54 C41,40 54,30 70,32 C78,24 92,22 106,26 C114,22 130,24 138,30 C150,28 162,34 170,44 C188,42 202,52 202,68 C216,70 226,80 226,92 C226,110 208,120 186,120 L56,120 C50,120 46,120 42,118 Z"
+        fill="#ffffff" stroke="#1f2937" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastTyping Fingers - Touch Typing Test</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+        <script>
+            try {
+                var __s = JSON.parse(localStorage.getItem('typefast-settings') || '{}');
+                var __t = __s.theme || 'coast';
+                document.body.classList.add('theme-' + __t);
+            } catch(e) { document.body.classList.add('theme-coast'); }
+        </script>
+    <div class="animated-backdrop">
+        <span class="bg-orb orb-1"></span>
+        <span class="bg-orb orb-2"></span>
+        <span class="bg-orb orb-3"></span>
+        <span class="bg-orb orb-4"></span>
+        <span class="bg-orb orb-5"></span>
+    </div>
+
+    <header class="header global-header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <span class="brand-mark">⌨️</span>
+                <h1>FastTyping Fingers</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#test" class="nav-link">Test</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="games.html" class="nav-link">Games</a>
+            </div>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Change theme">🎨</button>
+            </div>
+        </nav>
+    </header>
+    <div id="theme-selector" class="theme-selector hidden" role="dialog" aria-modal="false">
+        <div class="theme-selector-header">
+            <p>Choose a color vibe</p>
+            <button class="theme-close" aria-label="Close theme selector">×</button>
+        </div>
+        <div class="theme-options">
+            <div class="theme-option" data-theme="coast">
+                <div class="theme-preview theme-coast-preview"></div>
+                <span>Coast</span>
+            </div>
+            <div class="theme-option" data-theme="harbor">
+                <div class="theme-preview theme-harbor-preview"></div>
+                <span>Harbor</span>
+            </div>
+            <div class="theme-option" data-theme="nebula">
+                <div class="theme-preview theme-nebula-preview"></div>
+                <span>Nebula</span>
+            </div>
+            <div class="theme-option" data-theme="ember">
+                <div class="theme-preview theme-ember-preview"></div>
+                <span>Ember</span>
+            </div>
+            <div class="theme-option" data-theme="light">
+                <div class="theme-preview theme-light-preview"></div>
+                <span>Light</span>
+            </div>
+            <div class="theme-option" data-theme="dark">
+                <div class="theme-preview theme-dark-preview"></div>
+                <span>Dark</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <!-- Home Page -->
+        <section id="home-page" class="page active">
+            <div class="hero-section">
+                <div class="typing-stream" data-parallax="0.08">
+                    <span>fast fingers • precise keystrokes • flow state • accuracy streaks • rhythm matters •</span>
+                    <span>feel the cadence • dance on keys • laser focus • type smarter • keep breathing •</span>
+                    <span>fast fingers • precise keystrokes • flow state • accuracy streaks • rhythm matters •</span>
+                </div>
+                <div class="ambient-illustrations" data-parallax="0.12">
+                    <span class="floating-emoji">⭐</span>
+                    <span class="floating-emoji">✨</span>
+                    <span class="floating-emoji">🚀</span>
+                    <span class="floating-emoji">🎈</span>
+                    <span class="floating-emoji">🌈</span>
+                </div>
+                <div class="hero-grid">
+                    <div class="hero-content animate-fade-in">
+                        <h2 class="hero-title">Master Touch Typing</h2>
+                        <p class="hero-subtitle">Level up your typing skills with animated practice zones, immersive themes, and real-time insights.</p>
+                        <div class="hero-buttons">
+                            <button class="glow-btn primary" onclick="startTypingTest()">Start typing now</button>
+                            <button class="glow-btn ghost" onclick="document.getElementById('home-page').scrollIntoView({behavior: 'smooth'});">Explore features</button>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="floating-card accuracy-card">
+                            <span class="card-chip">✨</span>
+                            <span class="card-value">99%</span>
+                            <span class="card-label">Accuracy streak</span>
+                        </div>
+                        <div class="floating-card speed-card">
+                            <span class="card-chip">⚡</span>
+                            <span class="card-value">120 WPM</span>
+                            <span class="card-label">Top score</span>
+                        </div>
+                        <div class="floating-card sessions-card">
+                            <span class="card-chip">🔥</span>
+                            <span class="card-value">+12</span>
+                            <span class="card-label">Daily sessions</span>
+                        </div>
+                        <div class="floating-key key-a">A</div>
+                        <div class="floating-key key-s">S</div>
+                        <div class="floating-key key-d">D</div>
+                    </div>
+                </div>
+
+                <div class="hero-content animate-fade-in hero-caption">
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">100+</span>
+                            <span class="stat-label">Practice Texts</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">4</span>
+                            <span class="stat-label">Immersive Themes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">∞</span>
+                            <span class="stat-label">Improvement</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="test-options animate-slide-up">
+                    <h3 class="options-title">Choose Your Test Type</h3>
+                    <div class="options-grid">
+                        <div class="option-card primary-card animate-hover" onclick="startTypingTest()">
+                            <div class="option-icon gradient-icon">⌨️</div>
+                            <h4>Start Typing Test</h4>
+                            <p>Practice with 100+ paragraphs and improve your WPM</p>
+                            <div class="card-glow"></div>
+                        </div>
+                        <div class="option-card animate-hover" onclick="showComingSoon()">
+                            <div class="option-icon">🎯</div>
+                            <h4>Practice Mode</h4>
+                            <p>Focus on specific keys and combinations</p>
+                        </div>
+                        <div class="option-card animate-hover" onclick="showComingSoon()">
+                            <div class="option-icon">🏆</div>
+                            <h4>Competitions</h4>
+                            <p>Challenge other typists online</p>
+                        </div>
+                        <div class="option-card animate-hover" onclick="showComingSoon()">
+                            <div class="option-icon">📊</div>
+                            <h4>Statistics</h4>
+                            <p>Track your progress over time</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typing Test Page -->
+    <section id="test-page" class="page">
+            <div class="settings-wrapper">
+                <div class="settings-shell">
+                    <div class="settings-bar">
+                        <button class="back-button" aria-label="Return to home" onclick="goHome()">←</button>
+                    <div class="settings-group">
+                        <label>Time:</label>
+                        <select id="time-select">
+                            <option value="15">15s</option>
+                            <option value="30" selected>30s</option>
+                            <option value="60">60s</option>
+                            <option value="120">2min</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-group">
+                        <label>Words:</label>
+                        <select id="words-select">
+                            <option value="10">10</option>
+                            <option value="25" selected>25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-group">
+                        <label>Mode:</label>
+                        <div class="segmented-control mode-control" role="group" aria-label="Test mode">
+                            <button type="button" class="segment mode-option" data-mode="time">
+                                <span class="segment-icon">⏱</span>
+                                <span>Time</span>
+                            </button>
+                            <button type="button" class="segment mode-option" data-mode="words">
+                                <span class="segment-icon">A</span>
+                                <span>Words</span>
+                            </button>
+                            <button type="button" class="segment mode-option" data-mode="quote">
+                                <span class="segment-icon">❝</span>
+                                <span>Quote</span>
+                            </button>
+                        </div>
+                        <select id="mode-select" class="visually-hidden" aria-hidden="true" tabindex="-1">
+                            <option value="words" selected>Words</option>
+                            <option value="time">Time</option>
+                            <option value="quote">Quote</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-group">
+                        <label>Language:</label>
+                        <select id="language-select">
+                            <option value="english" selected>English</option>
+                            <option value="punctuation">+ Punctuation</option>
+                            <option value="numbers">+ Numbers</option>
+                            <option value="mixed">Mixed</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-group">
+                        <button id="sound-toggle" class="sound-btn active">🔊</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="test-container">
+                <!-- Test Stats -->
+                <div class="test-stats">
+                    <div class="stat">
+                        <span class="stat-label">WPM</span>
+                        <span id="wpm-display" class="stat-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Accuracy</span>
+                        <span id="accuracy-display" class="stat-value">100%</span>
+                    </div>
+                    <div class="stat" data-stat="timer">
+                        <span class="stat-label">Timer</span>
+                        <span id="timer-display" class="stat-value">30</span>
+                    </div>
+                </div>
+
+                <!-- Typing Area -->
+                <div class="typing-area">
+                    <div id="text-display" class="text-display">Loading your custom paragraph...</div>
+                    <input type="text" id="typing-input" class="typing-input" placeholder="Start typing to begin the test..." autocomplete="off" spellcheck="false">
+                </div>
+
+                <!-- Test Controls -->
+                <div class="test-controls">
+                    <button id="restart-btn" class="control-btn">↻ Restart</button>
+                    <button id="next-btn" class="control-btn">Next →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Page -->
+        <section id="about-page" class="page">
+            <div class="info-section">
+                <h2 class="section-title">About FastTyping Fingers</h2>
+                <p class="section-lead">We blend research-backed practice with playful polish so every session feels crisp, responsive, and rewarding.</p>
+                <div class="info-grid">
+                    <div class="info-card reveal-on-scroll">
+                        <h3>Crafted for Flow</h3>
+                        <p>Smart pacing, adaptive feedback, and distraction-free visuals keep you in rhythm while you sharpen muscle memory.</p>
+                    </div>
+                    <div class="info-card reveal-on-scroll">
+                        <h3>Insightful Analytics</h3>
+                        <p>Readable charts, real-time stats, and milestone tracking help you see improvement from the first keystroke to the final streak.</p>
+                    </div>
+                    <div class="info-card reveal-on-scroll">
+                        <h3>Designed with Care</h3>
+                        <p>Every theme is hand-tuned for contrast, accessibility, and delight—switch moods any time without missing a beat.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Page -->
+        <section id="contact-page" class="page">
+            <div class="info-section">
+                <h2 class="section-title">Let’s Build Faster Fingers Together</h2>
+                <p class="section-lead">Feedback, feature ideas, or collaboration invites—drop us a line and we’ll get back between sessions.</p>
+                <div class="contact-grid">
+                    <div class="contact-card reveal-on-scroll">
+                        <h3>Email</h3>
+                        <a href="mailto:hello@fasttypingfingers.app">hello@fasttypingfingers.app</a>
+                        <p>Share stories, report bugs, or request pro features.</p>
+                    </div>
+                    <div class="contact-card reveal-on-scroll">
+                        <h3>Community</h3>
+                        <p>Join the upcoming FastTyping Circle for live events, challenges, and coaching drops.</p>
+                        <button class="ghost-link" onclick="showComingSoon()">Notify me</button>
+                    </div>
+                    <div class="contact-card reveal-on-scroll">
+                        <h3>Support</h3>
+                        <p>Need help mid-session? Access the knowledge base or message us directly.</p>
+                        <button class="ghost-link" onclick="showComingSoon()">Open help desk</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Page -->
+        <section id="results-page" class="page">
+            <div class="results-container">
+
+                <div class="results-top">
+                <div class="results-hero">
+                    <div class="gauges">
+                        <div class="gauge-card gauge-accuracy">
+                            <div class="gauge" id="g-accuracy" data-max="100">
+                                <div class="gauge-inner">
+                                    <div class="gauge-value"><span id="gv-accuracy">100%</span></div>
+                                    <div class="gauge-sub">real accuracy <span id="gv-accuracy-real">100%</span></div>
+                                    <div class="gauge-label">accuracy</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gauge-card gauge-duration">
+                            <div class="gauge" id="g-duration" data-max="100">
+                                <div class="gauge-inner">
+                                    <div class="gauge-value"><span id="gv-duration">0:00</span></div>
+                                    <div class="gauge-label">duration</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gauge-card gauge-speed">
+                            <div class="gauge" id="g-speed" data-max="160">
+                                <div class="gauge-inner">
+                                    <div class="gauge-value"><span id="gv-wpm">0</span><span class="unit">wpm</span></div>
+                                    <div class="gauge-label">speed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button onclick="retakeTest()" class="action-btn primary">Take Another Test</button>
+                    <button onclick="goHome()" class="action-btn">Back to Home</button>
+                    <button onclick="shareResults()" class="action-btn">Share Results</button>
+                </div>
+                </div>
+
+                <div class="results-charts">
+                    <div class="chart-container">
+                        <h4>Speed Over Time</h4>
+                        <canvas id="speed-chart" width="800" height="300"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Accuracy Over Time</h4>
+                        <canvas id="accuracy-chart" width="800" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div class="test-video">
+                    <h4>Test Recording</h4>
+                    <video id="test-recording" controls style="display: none;">
+                        <source type="video/webm">
+                        Your browser does not support video recording playback.
+                    </video>
+                    <p id="video-message">Video recording is not available in this session.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/paragraphs.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/chart.js"></script>
+</body>
+</html>
