@@ -833,7 +833,7 @@ class TypingTest {
     startTest() {
         this.isTestActive = true;
         this.startTime = Date.now();
-        this.startRecording();
+         // Do not auto-start screen recording to avoid browser share prompts during typing
         
         if (this.testSettings.mode === 'time') {
             this.startTimer();
@@ -1777,4 +1777,5 @@ window.addEventListener('load', () => {
         console.warn('TypingTest fallback initialization');
         initializeTypingTest();
     }
+
 });
